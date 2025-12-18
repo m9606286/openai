@@ -7,7 +7,10 @@ import time
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 
 # 初始化模型
-model = genai.GenerativeModel('gemini-1.5-flash-latest')
+try:
+    model = genai.GenerativeModel('gemini-1.5-flash')
+except:
+    model = genai.GenerativeModel('gemini-pro')
 prompt = "分析本月業績：本月1000萬，上月800萬，去年同期1200萬"
 
 if "result" not in st.session_state:
