@@ -59,7 +59,14 @@ if user_input:
     """
     
     # 5. 呼叫 AI
-    model = genai.GenerativeModel('gemini-2.5-flash')
+    # 在你的程式碼中加入這個設定
+    safety_settings = [
+        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
+    ]
+    model = genai.GenerativeModel('gemini-2.5-flash', safety_settings=safety_settings)
     response = model.generate_content(full_prompt)
     
     # 6. 更新記憶並存回資料庫
