@@ -4,5 +4,5 @@ numpy
 FinMind
 tqdm
 matplotlib
-os
 openai
+
