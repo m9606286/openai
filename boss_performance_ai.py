@@ -2,36 +2,41 @@ import streamlit as st
 import google.generativeai as genai
 import time
 
-# 設定您的 Google API Key
-# 建議在 .streamlit/secrets.toml 中設定：GOOGLE_API_KEY = "你的金鑰"
+# 設定金鑰
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 
+# 1. 自動偵測可用的模型名稱
+def get_working_model():
+    available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+    # 優先順序：1.5 Flash -> 1.5 Pro -> Pro
+    for target in ['models/gemini-1.5-flash', 'models/gemini-1.5-pro', 'models/gemini-pro']:
+        if target in available_models:
+            return target
+    return available_models[0] if available_models else None
+
 # 初始化模型
-try:
-    model = genai.GenerativeModel('gemini-1.5-flash')
-except:
-    model = genai.GenerativeModel('gemini-pro')
+working_model_name = get_working_model()
+if working_model_name:
+    model = genai.GenerativeModel(working_model_name)
+else:
+    st.error("找不到可用的 Gemini 模型，請檢查 API Key 權限。")
+
 prompt = "分析本月業績：本月1000萬，上月800萬，去年同期1200萬"
 
 if "result" not in st.session_state:
     st.session_state.result = ""
 
 if st.button("分析業績"):
-    # 建立一個佔位符，顯示載入狀態
-    with st.spinner("正在產生分析報告..."):
+    with st.spinner(f"使用 {working_model_name} 分析中..."):
         for i in range(3):
             try:
-                # 呼叫 Gemini API
                 response = model.generate_content(prompt)
-                
-                # Gemini 的回傳內容在 response.text 中
                 st.session_state.result = response.text
                 break
             except Exception as e:
                 if i < 2:
                     time.sleep(2)
                 else:
-                    st.session_state.result = f"Gemini API 發生錯誤: {e}"
+                    st.session_state.result = f"錯誤: {e}"
 
-# 顯示結果
 st.write(st.session_state.result)
