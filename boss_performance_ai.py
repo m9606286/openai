@@ -13,7 +13,7 @@ if "result" not in st.session_state:
     st.session_state.result = ""
 
 if st.button("分析業績"):
-    with st.spinner(f"使用 {working_model_name} 分析中..."):
+    with st.spinner(f"分析中..."):
         for i in range(3):
             try:
                 response = model.generate_content(prompt)
