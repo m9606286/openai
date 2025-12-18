@@ -5,7 +5,7 @@ import time
 # 設定金鑰
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 
-model = genai.GenerativeModel('models/gemini-pro')
+model = genai.GenerativeModel('gemini-1.5-pro')
 
 prompt = "分析本月業績：本月1000萬，上月800萬，去年同期1200萬"
 
