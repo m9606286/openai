@@ -4,5 +4,6 @@ numpy
 FinMind
 tqdm
 matplotlib
-openai
+google.generativeai
+
 
