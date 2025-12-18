@@ -3,19 +3,19 @@ from openai import OpenAI
 import time
 import openai
 
-# 從 Secrets 拿 Key
+# 從 Secrets 拿 API Key
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
+# 範例業績數據
 prompt = "分析本月業績：本月1000萬，上月800萬，去年同期1200萬"
 
 # SessionState 儲存結果，避免每次互動都重跑
 if "result" not in st.session_state:
     st.session_state.result = ""
 
-# 按鈕觸發呼叫
+# 按鈕觸發呼叫 API
 if st.button("分析業績"):
-    # RateLimitError 重試機制
-    for i in range(3):
+    for i in range(3):  # 重試機制
         try:
             response = client.chat.completions.create(
                 model="gpt-4o-mini",
@@ -25,7 +25,7 @@ if st.button("分析業績"):
             break
         except openai.error.RateLimitError:
             if i < 2:
-                time.sleep(2)  # 等 2 秒再重試
+                time.sleep(2)  # 遇到速率限制等待 2 秒再重試
             else:
                 st.session_state.result = "請求過多，稍後再試。"
 
